@@ -2,16 +2,18 @@
 # $< = first dependency
 # $^ = all dependencies
 
-all: run
+all: os-image.bin
 
-kernel.bin: kernel-entry.o kernel.o
+kernel.bin: kernel-entry.o kernel.o vga.o
 	ld -m elf_i386 -o $@ -Ttext 0x1000 $^ --oformat binary
 
 kernel-entry.o: kernel-entry.asm
 	nasm $< -f elf -o $@
 
-
 kernel.o: kernel.c
+	gcc -m32 -fno-pic -ffreestanding -nostdlib -c $< -o $@
+
+vga.o: vga.c
 	gcc -m32 -fno-pic -ffreestanding -nostdlib -c $< -o $@
 
 MBR.bin: MBR.asm
