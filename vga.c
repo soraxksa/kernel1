@@ -1,4 +1,5 @@
 #include "vga.h"
+#include "util.h"
 
 static unsigned char port_byte_read(unsigned short port)
 {
@@ -29,7 +30,7 @@ void set_cursor(int position)
     port_byte_write(VGA_CTRL_REG, VGA_LOW);
     port_byte_write(VGA_DATA_REG, position & 0xFF);
     port_byte_write(VGA_CTRL_REG, VGA_HIGH);
-    port_byte_write(VGA_CTRL_REG, position >> 8);
+    port_byte_write(VGA_DATA_REG, position >> 8);
 }
 
 void write_char_at(char c, int offset)
@@ -39,16 +40,57 @@ void write_char_at(char c, int offset)
     vid_mem[offset + 1] = WHITE_ON_BLACK;
 }
 
+static int row_from_position(int position)
+{
+    // 2*MAX_COLS because offset is a video memory position 
+    // and we want a text grid position
+    return (position / (2* MAX_COLS));
+}
+
+static int get_position(int row, int col)
+{
+    return 2 * ( row*MAX_COLS + col );
+}
+
+static int newline_to_position(int curr_position)
+{
+    return get_position(row_from_position(curr_position) + 1, 0);
+}
+
+int scroll_in(int curr_position)
+{
+    memcpy(
+            (char*) VIDEO_ADDR + get_position(1,0),
+            (char*) VIDEO_ADDR + get_position(0,0),
+            2 * (MAX_ROWS-1) * MAX_COLS
+    );
+
+    for(int c = 0; c < MAX_COLS; c++)
+        write_char_at(' ', get_position(MAX_ROWS-1, c)); 
+
+    return curr_position - (2*MAX_COLS);
+
+}
 
 void print_string(char *string)
 {
     int offset = get_cursor();
     int i = 0;
-    while(string[i] != 0x00)
+    while(string[i] != 0)
     {
-        write_char_at(string[i], offset);
+        if(offset >= (MAX_COLS * MAX_ROWS * 2))
+        {
+            offset = scroll_in(offset);
+        }
+
+        if(string[i] == '\n')
+        {
+            offset = newline_to_position(offset);
+        }else{
+            write_char_at(string[i], offset);
+            offset += 2;
+        }
         i++;
-        offset += 2;
     }
     set_cursor(offset);
 }

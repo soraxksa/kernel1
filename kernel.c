@@ -6,5 +6,6 @@
 
 void main()
 {
-    print_string("HELLO KERNEL");
+    for(int i = 0; i < 200; i++)
+        print_string("HELLO KERNEL\n");
 }
