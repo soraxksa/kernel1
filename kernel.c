@@ -7,5 +7,5 @@
 void main()
 {
     for(int i = 0; i < 200; i++)
-        print_string("HELLO KERNEL\n");
+        print_string("HELLO KERNEL ");
 }

@@ -82,6 +82,8 @@ void print_string(char *string)
         {
             offset = scroll_in(offset);
         }
+        if(offset % (2*MAX_COLS) == 0)
+            offset += 2;
 
         if(string[i] == '\n')
         {
