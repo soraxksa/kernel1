@@ -1,14 +1,14 @@
 #include "vga.h"
 #include "util.h"
 
-static unsigned char port_byte_read(unsigned short port)
+unsigned char port_byte_read(unsigned short port)
 {
     unsigned char result;
     __asm__("in %%dx, %%al" : "=a" (result) : "d" (port));
     return result;
 }
 
-static void port_byte_write(unsigned short port, unsigned char data)
+void port_byte_write(unsigned short port, unsigned char data)
 {
     __asm__("out %%al, %%dx" : : "a" (data), "d" (port));
 }
@@ -70,6 +70,12 @@ int scroll_in(int curr_position)
 
     return curr_position - (2*MAX_COLS);
 
+}
+
+void print_backspace() {
+        int new_cursor = get_cursor() - 2;
+        write_char_at(' ', new_cursor);
+        set_cursor(new_cursor);
 }
 
 void print_string(char *string)

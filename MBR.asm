@@ -24,7 +24,7 @@ jmp $
 load_kernel:
 	mov	bx, KERNEL_ADDR
 	mov	dl, [BOOT_DRIVE]
-	mov	dh, 2
+	mov	dh, 0x10
 	call	load_from_disk
 	ret
 

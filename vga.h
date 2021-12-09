@@ -13,10 +13,14 @@
 #define MAX_COLS 80
 #define WHITE_ON_BLACK 0x0F
 
+unsigned char port_byte_read(unsigned short port);
+void port_byte_write(unsigned short port, unsigned char data);
 
 int get_cursor();
 void set_cursor(int position);
 void print_string(char *string);
+
+void print_backspace();
 
 
 
