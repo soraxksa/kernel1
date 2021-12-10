@@ -1,5 +1,5 @@
 #include "vga.h"
-#include "util.h"
+
 
 unsigned char port_byte_read(unsigned short port)
 {
@@ -78,7 +78,7 @@ void print_backspace() {
         set_cursor(new_cursor);
 }
 
-void print_string(char *string)
+void print_string(const char *string)
 {
     int offset = get_cursor();
     int i = 0;

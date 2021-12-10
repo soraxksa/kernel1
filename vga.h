@@ -1,6 +1,8 @@
 #ifndef VGA_H_
 #define VGA_H_
 
+#include "vga.h"
+#include "util.h"
 
 #define VGA_CTRL_REG 0x3D4
 #define VGA_DATA_REG 0x3D5
@@ -18,7 +20,7 @@ void port_byte_write(unsigned short port, unsigned char data);
 
 int get_cursor();
 void set_cursor(int position);
-void print_string(char *string);
+void print_string(const char *string);
 
 void print_backspace();
 
